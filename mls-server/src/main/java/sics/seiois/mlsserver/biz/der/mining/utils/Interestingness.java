@@ -1,5 +1,7 @@
 package sics.seiois.mlsserver.biz.der.mining.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sics.seiois.mlsserver.biz.der.metanome.denialconstraints.DenialConstraint;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
@@ -15,6 +17,9 @@ import java.util.List;
 
 public class Interestingness implements Serializable {
     private static final long serialVersionUID = 123770436027404717L;
+
+    private static Logger logger = LoggerFactory.getLogger(Interestingness.class);
+
 //    private float support_ratio;
 //    private float confidence;
 //    private float diversity;
@@ -190,8 +195,10 @@ public class Interestingness implements Serializable {
         double[][] feature_vectors = new double[1][numPredicates * 2];
         // add P_sel
         for (Predicate p : X) {
+//            logger.info("#### predicate: {}", p.toString().trim());
             feature_vectors[0][this.predicatesHashID.get(p.toString().trim())] = 1.0;
         }
+//        logger.info("#### predicate: {}", p_0.toString().trim());
         feature_vectors[0][this.predicatesHashID.get(p_0.toString().trim())] = 1.0;
         // compute the UB
         return this.mlpFilterRegressor.run(feature_vectors);

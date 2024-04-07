@@ -636,6 +636,10 @@ public class EvidenceGenerateMain {
                 reeFinderEvidSet.getIndex_null_string(), reeFinderEvidSet.getIndex_null_double(), reeFinderEvidSet.getIndex_null_long(),
                 MAX_X_LENGTH);
 
+        logger.info("#### allPredicates size: {}", allPredicates.size());
+
+        logger.info("#### allPredicates: {}", allPredicates);
+
 //            int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
 //            int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
 //            String PI_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"PIPath")); // python interpreter path

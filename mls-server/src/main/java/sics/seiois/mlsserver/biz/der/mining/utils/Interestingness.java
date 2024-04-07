@@ -195,10 +195,10 @@ public class Interestingness implements Serializable {
         double[][] feature_vectors = new double[1][numPredicates * 2];
         // add P_sel
         for (Predicate p : X) {
-//            logger.info("#### predicate: {}", p.toString().trim());
+            logger.info("#### predicate: {}", p.toString().trim());
             feature_vectors[0][this.predicatesHashID.get(p.toString().trim())] = 1.0;
         }
-//        logger.info("#### predicate: {}", p_0.toString().trim());
+        logger.info("#### predicate: {}", p_0.toString().trim());
         feature_vectors[0][this.predicatesHashID.get(p_0.toString().trim())] = 1.0;
         // compute the UB
         return this.mlpFilterRegressor.run(feature_vectors);

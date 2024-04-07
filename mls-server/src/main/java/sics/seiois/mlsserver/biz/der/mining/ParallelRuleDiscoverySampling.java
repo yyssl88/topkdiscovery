@@ -441,6 +441,17 @@ public class ParallelRuleDiscoverySampling {
 //        if (!this.topKOption.equals("noFiltering")) {
         this.loadInterestingnessModel(tokenToIDFile, interestingnessModelFile, filterRegressionFile, allPredicatesFile, hdfs);
 //        }
+
+        // remove predicates that not exist in the input allPredicates.txt file
+//        ArrayList<Predicate> rm_preds = new ArrayList<>();
+//        for (Predicate p : this.allPredicates) {
+//            if (!this.predicateDQNHashIDs.containsKey(p.toString().trim())) {
+//                rm_preds.add(p);
+//            }
+//        }
+//        for (Predicate p : rm_preds) {
+//            this.allPredicates.remove(p);
+//        }
     }
 
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,

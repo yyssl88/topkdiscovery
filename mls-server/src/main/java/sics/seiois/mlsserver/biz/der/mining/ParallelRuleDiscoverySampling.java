@@ -2345,7 +2345,7 @@ public class ParallelRuleDiscoverySampling {
     }
 
     // check whether t1 only exists once and in the non-constant predicates. remove rules like "t0.A == t1.A ^ t0.B == 0 -> t0.D == 0"
-    private boolean checkUnreasonableREE(DenialConstraint ree) {
+    private boolean isReasonableREE(DenialConstraint ree) {
         boolean t0_non_constant = false;
         boolean t1_non_constant = false;
         boolean t0_constant = false;
@@ -2376,8 +2376,21 @@ public class ParallelRuleDiscoverySampling {
             t1_non_constant = true;
         }
         boolean valid = t0_constant && t1_constant && t0_non_constant && t1_non_constant;
-        logger.info("{}, {}", ree.toStringOutput(), valid);
+//        logger.info("{}, {}", ree.toStringOutput(), valid);
         return valid;
+    }
+
+    // Remove rules like "t0.A == t1.A -> t0.B == c"
+    private boolean isMeaninglessREE(DenialConstraint ree) {
+        boolean isMeaningless = false;
+        if (ree.getPredicateSet().size() == 1) {
+            for (Predicate p_X : ree.getPredicateSet()) {
+                if (!p_X.isConstant() && ree.getRHS().isConstant()) {
+                    isMeaningless = true;
+                }
+            }
+        }
+        return isMeaningless;
     }
 
     private boolean checkUnreasonableREE_new(DenialConstraint ree) {
@@ -2397,7 +2410,10 @@ public class ParallelRuleDiscoverySampling {
     private void maintainTopKRules(DenialConstraintSet rees) {
         // original - use priorityQueue in java.util
         for (DenialConstraint ree : rees) {
-            if (!checkUnreasonableREE(ree)) {
+            if (!isReasonableREE(ree)) {
+                continue;
+            }
+            if (isMeaninglessREE(ree)) {
                 continue;
             }
 //            if (!checkUnreasonableREE_new(ree)) { // for case study

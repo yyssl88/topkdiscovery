@@ -690,6 +690,9 @@ public class ParallelRuleDiscoverySampling {
 //                applicationRHSs.add(p);
 //            }
             applicationRHSs.add(p);
+//            if (p.isConstant() && p.getOperand1().getColumnLight().getName().contains("h_index")) { // for case study, aminer_merged_categorical
+//                applicationRHSs.add(p);
+//            }
         }
 
         // 9. test NCVoter
@@ -905,12 +908,75 @@ public class ParallelRuleDiscoverySampling {
         this.prepareAllPredicatesMultiTuples();
 
         ArrayList<Predicate> rm_preds = new ArrayList<>();
-        if (this.table_name.contains("AMiner")) {
-            for (Predicate p : this.allPredicates) {
-                if (p.isConstant() && p.getOperand1().getColumnLight().getName().contains("paper_affiliations") && p.getConstant().contains(".")) { // remove "t.paper_affiliations = ."
+        for (Predicate p : this.allPredicates) {
+//                if (p.isConstant() && p.getOperand1().getColumnLight().getName().contains("paper_affiliations") && p.getConstant().contains(".")) { // remove "t.paper_affiliations = ."
+//                    rm_preds.add(p);
+//                }
+//                if (p.getOperand1().getColumnLight().getName().equals("author2paper_id") || p.getOperand1().getColumnLight().getName().equals("author_id") ||
+//                        p.getOperand1().getColumnLight().getName().equals("paper_id")) { // for case study, aminer_merged_categorical
+//                    rm_preds.add(p);
+//                }
+            // for case study, aminer_merged_categorical
+            /*
+            if (!p.isConstant()) {
+                if (p.getOperand1().getColumnLight().getName().contains("published_papers__") || p.getOperand1().getColumnLight().getName().contains("citations__") ||
+                        p.getOperand1().getColumnLight().getName().contains("h_index") || p.getOperand1().getColumnLight().getName().contains("h_index_interval") || p.getOperand1().getColumnLight().getName().contains("p_index__") ||
+                        p.getOperand1().getColumnLight().getName().contains("p_index_with_unequal_a_index__") || p.getOperand1().getColumnLight().getName().contains("author_position__") ||
+                        p.getOperand1().getColumnLight().getName().contains("year__")) {
                     rm_preds.add(p);
                 }
             }
+            else {
+                if (p.getOperand1().getColumnLight().getName().equals("published_papers") || p.getOperand1().getColumnLight().getName().equals("citations") ||
+                        p.getOperand1().getColumnLight().getName().equals("h_index") || p.getOperand1().getColumnLight().getName().equals("p_index") ||
+                        p.getOperand1().getColumnLight().getName().equals("p_index_with_unequal_a_index") || p.getOperand1().getColumnLight().getName().equals("author_position") ||
+                        p.getOperand1().getColumnLight().getName().equals("year")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("published_papers__3") || p.getOperand1().getColumnLight().getName().equals("published_papers__10") || p.getOperand1().getColumnLight().getName().equals("published_papers__100")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("citations__0") || p.getOperand1().getColumnLight().getName().equals("citations__5") || p.getOperand1().getColumnLight().getName().equals("citations__50")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("p_index__05") || p.getOperand1().getColumnLight().getName().equals("p_index__1") || p.getOperand1().getColumnLight().getName().equals("p_index__50")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("p_index__0") && p.getConstant().equals("0")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("p_index_with_unequal_a_index__05") || p.getOperand1().getColumnLight().getName().equals("p_index_with_unequal_a_index__1") ||
+                        p.getOperand1().getColumnLight().getName().equals("p_index_with_unequal_a_index__50")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("p_index_with_unequal_a_index__0") && p.getConstant().equals("0")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("author_position__5") || p.getOperand1().getColumnLight().getName().equals("author_position__10")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("author_position__1") && p.getConstant().equals("0")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("author_position__3") && p.getConstant().equals("0")) {
+                    rm_preds.add(p);
+                    continue;
+                }
+                if (p.getOperand1().getColumnLight().getName().equals("year__1950") || p.getOperand1().getColumnLight().getName().equals("year__1960") || p.getOperand1().getColumnLight().getName().equals("year__1970") ||
+                        p.getOperand1().getColumnLight().getName().equals("year__1980") || p.getOperand1().getColumnLight().getName().equals("year__1990") || p.getOperand1().getColumnLight().getName().equals("year__2000")) {
+                    rm_preds.add(p);
+                }
+            }
+            */
         }
         for (Predicate p : rm_preds) {
             this.allPredicates.remove(p);
@@ -2278,12 +2344,65 @@ public class ParallelRuleDiscoverySampling {
         return rees;
     }
 
+    // check whether t1 only exists once and in the non-constant predicates. remove rules like "t0.A == t1.A ^ t0.B == 0 -> t0.D == 0"
+    private boolean checkUnreasonableREE(DenialConstraint ree) {
+        boolean t0_non_constant = false;
+        boolean t1_non_constant = false;
+        boolean t0_constant = false;
+        boolean t1_constant = false;
+        for (Predicate p : ree.getPredicateSet()) {
+            if (p.isConstant()) {
+                if (p.getIndex1() == 0) {
+                    t0_constant = true;
+                }
+                if (p.getIndex1() == 1) {
+                    t1_constant = true;
+                }
+            } else {
+                t0_non_constant = true;
+                t1_non_constant = true;
+            }
+        }
+        Predicate rhs = ree.getRHS();
+        if (rhs.isConstant()) {
+            if (rhs.getIndex1() == 0) {
+                t0_constant = true;
+            }
+            if (rhs.getIndex1() == 1) {
+                t1_constant = true;
+            }
+        } else {
+            t0_non_constant = true;
+            t1_non_constant = true;
+        }
+        boolean valid = t0_constant && t1_constant && t0_non_constant && t1_non_constant;
+        logger.info("{}, {}", ree.toStringOutput(), valid);
+        return valid;
+    }
+
+    private boolean checkUnreasonableREE_new(DenialConstraint ree) {
+        if (ree.getPredicateSet().size() == 2) {
+            for (Predicate p : ree.getPredicateSet()) {
+                if (!p.isConstant() && p.getOperand1().getColumnLight().getName().equals("research_interests")) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /*
         store the current top-K interesting REEs
      */
     private void maintainTopKRules(DenialConstraintSet rees) {
         // original - use priorityQueue in java.util
         for (DenialConstraint ree : rees) {
+            if (!checkUnreasonableREE(ree)) {
+                continue;
+            }
+//            if (!checkUnreasonableREE_new(ree)) { // for case study
+//                continue;
+//            }
             topKREEsTemp.add(ree);
         }
         // score the current top-K REEs and their corresponding interesting scores

@@ -327,6 +327,12 @@ public class RuleFindRequestMock {
                 ruleRequest.setDimensionID(directory);
                 mockPaperAuthor_statistical(ruleRequest, dataOption);
                 break;
+            case "aminer_merged_categorical" :
+                mockAminer_merged_categorical(ruleRequest);
+                break;
+            case "aminer_merged_categorical_sample" :
+                mockAminer_merged_categorical_sample(ruleRequest);
+                break;
             case "aminer_ml" :
                 directory = "hdfs:///tmp/aminer/us_csv/";
                 ruleRequest.setDimensionID(directory);
@@ -3295,6 +3301,74 @@ public class RuleFindRequestMock {
         return table1;
     }
 
+    private static void mockAminer_merged_categorical(RuleDiscoverExecuteRequest ruleRequest) {
+        TableInfos tables = new TableInfos();
+        TableInfo nameBasics = getAminer_merged_categorical();
+        List<TableInfo> listable = new ArrayList<>();
+        listable.add(nameBasics);
+        tables.setTableInfoList(listable);
+
+        ruleRequest.setTableInfos(tables);
+        ruleRequest.setResultStorePath("/tmp/rulefind/" + ruleRequest.getTaskId() + "/result.ree");
+    }
+
+    private static TableInfo getAminer_merged_categorical() {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("aminer");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/aminer_merged_categorical_new.csv");
+
+//        String header = "author_id,author_name,author_affiliations,published_papers,citations,h_index,p_index,p_index_with_unequal_a_index,research_interests,author2paper_id,paper_id,author_position,paper_title,author,paper_affiliations,year,venue";
+//        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+        String header = "author_id,author_name,author_affiliations,published_papers,citations,h_index,p_index,p_index_with_unequal_a_index,research_interests,published_papers__3,published_papers__5," +
+                "published_papers__10,published_papers__50,published_papers__100,citations__0,citations__5,citations__20,citations__50,citations__100,h_index_interval,p_index__0,p_index__05,p_index__1," +
+                "p_index__5,p_index__10,p_index__50,p_index_with_unequal_a_index__0,p_index_with_unequal_a_index__05,p_index_with_unequal_a_index__1,p_index_with_unequal_a_index__5,p_index_with_unequal_a_index__10," +
+                "p_index_with_unequal_a_index__50,author2paper_id,paper_id,author_position,author_position__1,author_position__3,author_position__5,author_position__10,paper_title,author,paper_affiliations,year," +
+                "venue,year__1950,year__1960,year__1970,year__1980,year__1990,year__2000,year__2010";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)," +
+                "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)," +
+                "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)," +
+                "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)," +
+                "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+
+        return table1;
+    }
+
+    private static void mockAminer_merged_categorical_sample(RuleDiscoverExecuteRequest ruleRequest) {
+        TableInfos tables = new TableInfos();
+        TableInfo nameBasics = getAminer_merged_categorical_sample();
+        List<TableInfo> listable = new ArrayList<>();
+        listable.add(nameBasics);
+        tables.setTableInfoList(listable);
+
+        ruleRequest.setTableInfos(tables);
+        ruleRequest.setResultStorePath("/tmp/rulefind/" + ruleRequest.getTaskId() + "/result.ree");
+    }
+
+    private static TableInfo getAminer_merged_categorical_sample() {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("aminer");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/aminer_merged_categorical_new_sample.csv");
+
+//        String header = "author_id,author_name,author_affiliations,published_papers,citations,h_index,p_index,p_index_with_unequal_a_index,research_interests,author2paper_id,paper_id,author_position,paper_title,author,paper_affiliations,year,venue";
+//        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        String header = "author_id,author_name,author_affiliations,published_papers,citations,h_index,p_index,p_index_with_unequal_a_index,research_interests,published_papers__3,published_papers__5," +
+                "published_papers__10,published_papers__50,published_papers__100,citations__0,citations__5,citations__20,citations__50,citations__100,h_index_interval,p_index__0,p_index__05,p_index__1," +
+                "p_index__5,p_index__10,p_index__50,p_index_with_unequal_a_index__0,p_index_with_unequal_a_index__05,p_index_with_unequal_a_index__1,p_index_with_unequal_a_index__5,p_index_with_unequal_a_index__10," +
+                "p_index_with_unequal_a_index__50,author2paper_id,paper_id,author_position,author_position__1,author_position__3,author_position__5,author_position__10,paper_title,author,paper_affiliations,year," +
+                "venue,year__1950,year__1960,year__1970,year__1980,year__1990,year__2000,year__2010";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)," +
+                "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)," +
+                "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)," +
+                "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)," +
+                "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+
+        return table1;
+    }
 
     private static void mockPaperAuthor(RuleDiscoverExecuteRequest ruleRequest){
         TableInfos tables = new TableInfos();

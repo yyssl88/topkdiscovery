@@ -89,6 +89,8 @@ public class RuleFinder {
             sparkClintConfMap.put("spark.network.timeout", "300");
 //            sparkClintConfMap.put("spark.executor.instances","4");
 
+            sparkClintConfMap.put("spark.driver.maxResultSize", "6G");
+
 //            // 64 env
 //            sparkClintConfMap.put("spark.driver.memory","8G");
 //            sparkClintConfMap.put("spark.executor.memory","4G");

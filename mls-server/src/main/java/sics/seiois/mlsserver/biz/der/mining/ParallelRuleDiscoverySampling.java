@@ -2375,7 +2375,10 @@ public class ParallelRuleDiscoverySampling {
             t0_non_constant = true;
             t1_non_constant = true;
         }
-        boolean valid = t0_constant && t1_constant && t0_non_constant && t1_non_constant;
+        boolean valid = true;
+        if (ree.getRHS().isConstant()) {
+            valid = t0_constant && t1_constant && t0_non_constant && t1_non_constant;
+        }
 //        logger.info("{}, {}", ree.toStringOutput(), valid);
         return valid;
     }
